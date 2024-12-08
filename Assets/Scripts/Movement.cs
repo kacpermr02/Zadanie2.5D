@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; // Required for loading scenes
 
 public class Movement : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Movement : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
+
     void Update()
     {
         if (!isMoving)
@@ -62,5 +64,31 @@ public class Movement : MonoBehaviour
         }
 
         return true;
+    }
+
+    // This function handles level loading when the player enters a designated trigger area
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Exit")) // Ensure the trigger area has a "LevelExit" tag
+        {
+            LoadNextLevel();
+        }
+    }
+
+    private void LoadNextLevel()
+    {
+        // Assuming you want to load the next scene based on the build index
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        // If next scene exists, load it
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            Debug.Log("No next level available.");
+        }
     }
 }
